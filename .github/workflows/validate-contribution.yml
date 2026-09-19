@@ -1,0 +1,21 @@
+name: Validate contribution
+on:
+  push:
+    branches: [validate-visual-reminders]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: temurin
+      - run: ./gradlew build --no-daemon
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-reports
+          path: build/reports
