@@ -29,10 +29,10 @@ class VolatileBaboonCountdownTest
 		when(npc.getId()).thenReturn(NpcID.TOA_PATH_APMEKEN_BABOON_ZOMBIE);
 		when(npc.getAnimation()).thenReturn(AnimationID.NPC_MANDRILL_EXPLODE);
 		when(client.getTickCount()).thenReturn(100);
-		overlay.onAnimationChanged(new AnimationChanged(npc));
+		overlay.onAnimationChanged(animationChanged(npc));
 		assertEquals(3, overlay.remainingTicks(npc));
 		when(client.getTickCount()).thenReturn(101);
-		overlay.onAnimationChanged(new AnimationChanged(npc));
+		overlay.onAnimationChanged(animationChanged(npc));
 		assertEquals(2, overlay.remainingTicks(npc));
 		when(client.getTickCount()).thenReturn(102);
 		assertEquals(1, overlay.remainingTicks(npc));
@@ -46,17 +46,17 @@ class VolatileBaboonCountdownTest
 	{
 		NPC npc = mock(NPC.class);
 		when(npc.getAnimation()).thenReturn(AnimationID.NPC_MANDRILL_EXPLODE);
-		overlay.onAnimationChanged(new AnimationChanged(npc));
+		overlay.onAnimationChanged(animationChanged(npc));
 		assertEquals(0, overlay.remainingTicks(npc));
 		when(npc.getId()).thenReturn(NpcID.TOA_PATH_APMEKEN_BABOON_ZOMBIE);
 		when(npc.getAnimation()).thenReturn(-1);
-		overlay.onAnimationChanged(new AnimationChanged(npc));
+		overlay.onAnimationChanged(animationChanged(npc));
 		assertEquals(0, overlay.remainingTicks(npc));
 		when(npc.getAnimation()).thenReturn(AnimationID.NPC_MANDRILL_EXPLODE);
-		overlay.onAnimationChanged(new AnimationChanged(npc));
+		overlay.onAnimationChanged(animationChanged(npc));
 		overlay.onNpcDespawned(new NpcDespawned(npc));
 		assertEquals(0, overlay.remainingTicks(npc));
-		overlay.onAnimationChanged(new AnimationChanged(npc));
+		overlay.onAnimationChanged(animationChanged(npc));
 		overlay.shutDown();
 		assertEquals(0, overlay.remainingTicks(npc));
 	}
@@ -70,5 +70,12 @@ class VolatileBaboonCountdownTest
 		when(config.volatileBaboonTimer()).thenReturn(true);
 		assertTrue(overlay.isEnabled(config, apmeken));
 		assertFalse(overlay.isEnabled(config, new RaidState(false, true, RaidRoom.BABA, 1)));
+	}
+
+	private static AnimationChanged animationChanged(NPC npc)
+	{
+		AnimationChanged event = new AnimationChanged();
+		event.setActor(npc);
+		return event;
 	}
 }
